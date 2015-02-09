@@ -1,0 +1,83 @@
+#!/usr/bin/env node
+//Configure vagrant interface
+var vagrant = require('vagrant');
+var utils = require('./lib/utils');
+var manage = require('./lib/manage');
+var colors = require('colors');
+
+vagrant.start = utils.howstDir;
+
+//CLI Routing
+var program = require('commander');
+
+//Libraries
+var help = require('./lib/help');
+
+program
+  .version('0.0.1')
+
+//Custom help text
+program
+  .on('--help', function(){
+    console.log(help.text);
+});
+
+//CREATE
+program
+  .command('create <hostname>')
+  .description("Create a new Howst machine")
+  .action(function(hostname, options) {
+    manage.newMachine(hostname)
+});
+
+//CONFIG
+program
+  .command('config <hostname>')
+  .description("Reconfigure an existing Howst machine")
+  .action(function(hostname) {
+    manage.editMachine(hostname)
+});
+
+//REMOVE
+program
+  .command('destroy <hostname>')
+  .description("stops and deletes all traces of the Howst machine")
+  .action(function(hostname) {
+    manage.destroyMachine(hostname)
+});
+
+/* TODO - find a way to have optional arguments with commander so we can use defaults
+//SET DEFAULT
+program
+  .command('default <hostname>')
+  .description("Sets the default Howst machine")
+  .action(function(machine) {
+    utils.setDefault(machine);
+});
+*/
+
+//We'll just pass anything else through to vagrant
+program
+  .command('*')
+  .description("Vagrant passthrough.  See below.")
+  .action(function () {
+    var parsedArgs = [];
+    for (var i = 0; i < arguments.length - 1; i++){
+      parsedArgs.push(arguments[i]);
+    }
+    var command = parsedArgs[0];
+    parsedArgs.shift();
+    parsedArgs.push(function(){});
+    vagrant[command].apply(this, parsedArgs);
+});
+
+program.parse(process.argv);
+  
+
+ 
+
+/*
+//From a dir with a Vagrantfile, this will ssh into the VM 
+var empty = function(){};
+vagrant['box']("list", empty)
+*/

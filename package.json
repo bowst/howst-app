@@ -1,0 +1,33 @@
+{
+  "name": "howst",
+  "version": "1.0.0",
+  "description": "A tool for easily creating and managing local drupal instances",
+  "main": "index.js",
+  "bin": {
+    "howst": "howst.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bowst/howst-app.git"
+  },
+  "keywords": [
+    "drupal",
+    "cli"
+  ],
+  "author": "Drew Trafton",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bowst/howst-app/issues"
+  },
+  "homepage": "https://github.com/bowst/howst-app",
+  "dependencies": {
+    "colors": "^1.0.3",
+    "commander": "^2.6.0",
+    "js-yaml": "^3.2.6",
+    "promptly": "^0.2.1",
+    "vagrant": "0.0.1"
+  }
+}
