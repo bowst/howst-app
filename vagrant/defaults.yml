@@ -1,0 +1,7 @@
+#Defaults for new Howst instances
+db_name: "drupal"
+db_user: "drupal_user"
+db_host: "127.0.0.1"
+db_password: "develop"
+db_root_password: 'vagrant'
+guest_docroot: "/var/www/drupal"

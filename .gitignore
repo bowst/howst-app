@@ -13,3 +13,7 @@ results
  
 node_modules
 npm-debug.log
+
+#ignore vagrant configs
+vagrant/.vagrant
+vagrant/howst.yml
