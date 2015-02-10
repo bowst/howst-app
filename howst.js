@@ -14,7 +14,7 @@ var program = require('commander');
 var help = require('./lib/help');
 
 program
-  .version('0.0.1')
+  .version('0.0.3')
 
 //Custom help text
 program
