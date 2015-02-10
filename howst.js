@@ -46,6 +46,15 @@ program
     manage.destroyMachine(hostname)
 });
 
+//LIST
+program
+  .command('list')
+  .description("Lists all known Howst machines")
+  .option('-s, --status', 'Show status')
+  .action(function(options) {
+    manage.listMachines(options);
+});
+
 //Set the remote password
 program
   .command('remote-password <password>')

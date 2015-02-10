@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/bowst/howst-app",
   "dependencies": {
+    "cli-table": "^0.3.1",
     "colors": "^1.0.3",
     "commander": "^2.6.0",
     "js-yaml": "^3.2.6",
