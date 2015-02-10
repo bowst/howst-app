@@ -44,6 +44,31 @@ if !node['existing']['is_existing']
   end
 end
 
+file File.join(site_path, "sites/default/settings.php") do
+  owner 'vagrant'
+  group 'vagrant'
+  mode '0770'
+  content <<-SETTINGS
+  <?php
+  
+  ​// Local development configuration.
+  if (!defined('PANTHEON_ENVIRONMENT')) {
+    // Database.
+    $databases['default']['default'] = array(
+      'database' => '#{node['database']['name']}',
+      'username' => '#{node['database']['user']}',
+      'password' => '#{node['database']['pass']}',
+      'host' => '#{node['database']['host']}',
+      'driver' => 'mysql',
+      'port' => 3306,
+      'prefix' => '',
+    );
+  }
+  
+  SETTINGS
+  action :create_if_missing
+end
+
 execute "Create .exists file" do
   command "touch #{ File.join(site_path, '.exists') }"
   cwd site_path

@@ -29,7 +29,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       node.vm.hostname = "#{machine['hostname']}"
       # Share an additional folder to the guest VM.  
       # Docroot
-      node.vm.synced_folder machine['host_docroot'], machine['guest_docroot'], :create => true,
+      node.vm.synced_folder machine['host_docroot'], "/var/www/drupal", :create => true,
         :"mount_options" => ["dmode=770,fmode=770"] 
         
       #Drush files
@@ -70,7 +70,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           },
           drupal_version: machine['drupal_version'],
           project: {
-            absolute_document_root: machine['guest_docroot']
+            absolute_document_root: "/var/www/drupal"
           },
           database: {
             name: machine['db_name'],
@@ -92,7 +92,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             "recipe[howst::php]",
             "recipe[howst::nginx]",
             "recipe[composer]",
-            "recipe[git]",
             "recipe[howst::drupal]",
             "recipe[howst::database]",
             "recipe[vim]",
