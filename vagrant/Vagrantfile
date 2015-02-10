@@ -27,13 +27,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   howst["machines"].each do |machine|
     config.vm.define "#{machine['hostname']}" do |node|
       node.vm.hostname = "#{machine['hostname']}"
-      # Share an additional folder to the guest VM. The first argument is
-      # the path on the host to the actual folder. The second argument is
-      # the path on the guest to mount the folder. And the optional third
-      # argument is a set of non-required options.
-      # config.vm.synced_folder "../data", "/vagrant_data"
+      # Share an additional folder to the guest VM.  
+      # Docroot
       node.vm.synced_folder machine['host_docroot'], machine['guest_docroot'], :create => true,
         :"mount_options" => ["dmode=770,fmode=770"] 
+        
+      #Drush files
+      node.vm.synced_folder machine['path_to_drush_files'], "/home/vagrant/.drush", :create => true,
+        :"mount_options" => ["dmode=770","fmode=770"]
+        
       # An array of symbols representing groups of cookbook described in the Vagrantfile
       # to skip installing and copying to Vagrant's shelf.
       # config.berkshelf.except = []
@@ -79,7 +81,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           existing: {
             is_existing: machine['is_existing_site'],
             drush_version: machine['drush_version'],
-            drush_directory: machine['path_to_drush_files']
+            drush_directory: machine['path_to_drush_files'],
+            is_pantheon: machine['is_pantheon'],
+            pantheon_password: ENV['HOWST_REMOTE_PASSWORD']
           }
         }
 

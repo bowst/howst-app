@@ -50,11 +50,13 @@ execute "Create .exists file" do
   action :run
 end
 
-execute "Set permissions" do
+execute "Set Permissions" do
   command "sudo chmod a+w #{File.join(site_path, "sites/default/settings.php")}"
   cwd site_path
   action :run
+  only_if  do File.exists?(File.join(site_path, "sites/default/settings.php")) end
 end
+
 
 execute "Set additional permissions" do
   command "sudo chmod a+w #{File.join(site_path, "sites/default")}"

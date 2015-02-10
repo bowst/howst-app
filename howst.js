@@ -40,11 +40,21 @@ program
 
 //REMOVE
 program
-  .command('destroy <hostname>')
+  .command('remove <hostname>')
   .description("stops and deletes all traces of the Howst machine")
   .action(function(hostname) {
     manage.destroyMachine(hostname)
 });
+
+//Set the remote password
+program
+  .command('remote-password <password>')
+  .description("Sets password for syncing remote databases")
+  .action(function(password) {
+    process.env['HOWST_REMOTE_PASSWORD'] = password;
+});
+
+
 
 /* TODO - find a way to have optional arguments with commander so we can use defaults
 //SET DEFAULT

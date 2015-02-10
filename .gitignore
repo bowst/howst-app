@@ -17,3 +17,4 @@ npm-debug.log
 #ignore vagrant configs
 vagrant/.vagrant
 vagrant/howst.yml
+vagrant/Gemfile.lock

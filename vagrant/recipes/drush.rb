@@ -1,4 +1,4 @@
-#only do this it's not pantheon
+#only do this if it's drush version 6 and up
 if node['existing']['drush_version'] >= 6
   #Copy appropriate composer.json depending on drupal version - edit the appropriate file in files/composer to change
   if node['existing']['drush_version'] == 6
@@ -25,28 +25,32 @@ execute "Add Composer's global bin to $PATH" do
   action :run
 end
 
-=begin
-ruby_block "Prep Drush files for transfer" do
-  block do 
-    FileUtils.cp_r("#{node['existing']['drush_directory']}/.","#{Dir.home}/.howst/files/default/drush")
+if node['existing']['is_pantheon']
+  #Install Terminus
+  bash "Install Terminus" do
+    user "vagrant"
+    cwd "/home/vagrant"
+    environment ({'HOME' => '/home/vagrant', 'USER' => 'vagrant'})
+    code <<-EOH
+    # Download Terminus.
+    git clone https://github.com/pantheon-systems/terminus.git $HOME/.drush/terminus
+    # Download dependencies.
+    cd $HOME/.drush/terminus
+    sudo composer update --no-dev
+    # Clear Drush's cache.
+    drush cc drush
+    EOH
   end
-end
-
-#Copy over any files we want (drush aliases, policy files, etc.)
-remote_directory "/home/vagrant/.drush" do
-  files_mode '777'
-  files_owner 'vagrant'
-  mode '0770'
-  owner 'vagrant'
-  source 'drush'
-end
-
-ruby_block "Drush files clean up" do
-  block do 
-    FileUtils.rm_rf(Dir.glob("#{node['existing']['drush_directory']}/*"))
+=begin  
+  #Log in
+  bash "Login to Pantheon" do
+    user "vagrant"
+    cwd "/home/vagrant"
+    environment ({'HOME' => '/home/vagrant', 'USER' => 'vagrant'})
+    code <<-EOH
+    EOH
   end
-end
 =end
-
+end
 
 
