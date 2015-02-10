@@ -50,12 +50,15 @@ This will link the package to your bin so you can edit code in your local git re
 ```
 Usage: howst [options] [command]
 
+
   Commands:
 
-    create <hostname>   Create a new Howst machine
-    config <hostname>   Reconfigure an existing Howst machine
-    destroy <hostname>  stops and deletes all traces of the Howst machine
-    *                   Vagrant passthrough.  See below.
+    create <hostname>           Create a new Howst machine
+    config <hostname>           Reconfigure an existing Howst machine
+    remove <hostname>           stops and deletes all traces of the Howst machine
+    list [options]              Lists all known Howst machines
+    remote-password <password>  Sets password for syncing remote databases
+    *                           Vagrant passthrough.  See below.
 
   Options:
 
@@ -83,8 +86,9 @@ Usage: howst [options] [command]
         ssh-config      outputs OpenSSH valid configuration to connect to the machine 
         status          outputs status of the vagrant machine 
         suspend         suspends the machine 
-        up              starts and provisions the vagrant environment 
+        up              starts and provisions the vagrant environment
         version         prints current and latest Vagrant version
+
 ```
 
 ## Contributing
