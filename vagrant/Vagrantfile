@@ -13,13 +13,8 @@ howst = YAML::load_file "howst.yml"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #GLOBAL CONFIGS
-  config.vm.box = "chef/ubuntu-14.04"
+  config.vm.box = "bowst/howst"
   config.vm.network :private_network, type: "dhcp"
-  # Set the version of chef to install using the vagrant-omnibus plugin
-  config.omnibus.chef_version = :latest
-  # Enabling the Berkshelf plugin. To enable this globally, add this configuration
-  # option to your ~/.vagrant.d/Vagrantfile file
-  config.berkshelf.enabled = true
   config.nfs.map_uid = Process.uid
   config.nfs.map_gid = Process.gid
 
@@ -63,41 +58,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       #update packages
       node.vm.provision "shell", inline: "sudo apt-get update"
       #Provision Dependency Stack
-      node.vm.provision :chef_solo do |chef|
-        chef.json = {
-          mysql: {
-            server_root_password: machine['db_root_password']
-          },
-          drupal_version: machine['drupal_version'],
-          project: {
-            absolute_document_root: "/var/www/drupal"
-          },
-          database: {
-            name: machine['db_name'],
-            user: machine['db_user'],
-            host: machine['db_host'],
-            pass: machine['db_password']
-          },
-          existing: {
-            is_existing: machine['is_existing_site'],
-            drush_version: machine['drush_version'],
-            drush_directory: machine['path_to_drush_files'],
-            is_pantheon: machine['is_pantheon'],
-            pantheon_password: ENV['HOWST_REMOTE_PASSWORD']
-          }
-        }
 
-        chef.run_list = [
-            "recipe[howst::mysql]",
-            "recipe[howst::php]",
-            "recipe[howst::nginx]",
-            "recipe[composer]",
-            "recipe[howst::drupal]",
-            "recipe[howst::database]",
-            "recipe[vim]",
-            "recipe[howst::drush]"
-        ]
-      end
     end
   end
 end
