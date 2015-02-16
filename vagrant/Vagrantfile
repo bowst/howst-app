@@ -22,6 +22,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   howst["machines"].each do |machine|
     config.vm.define "#{machine['hostname']}" do |node|
       node.vm.hostname = "#{machine['hostname']}"
+      # Share an additional folder to the guest VM.  
+      # Docroot
+      node.vm.synced_folder machine['host_docroot'], machine['guest_docroot'], :create => true,
+        :"mount_options" => ["dmode=770,fmode=770"] 
+        
+      #Drush files
+      node.vm.synced_folder machine['path_to_drush_files'], "/home/vagrant/.drush", :create => true,
+        :"mount_options" => ["dmode=770","fmode=770"]
         
       # An array of symbols representing groups of cookbook described in the Vagrantfile
       # to skip installing and copying to Vagrant's shelf.
@@ -89,14 +97,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           s.privileged = false
         end
       end  
-      # Share an additional folder to the guest VM.  
-      # Docroot
-      node.vm.synced_folder machine['host_docroot'], "/var/www/drupal", :create => true,
-        :"mount_options" => ["dmode=770,fmode=770"] 
-        
-      #Drush files
-      node.vm.synced_folder machine['path_to_drush_files'], "/home/vagrant/.drush", :create => true,
-        :"mount_options" => ["dmode=770","fmode=770"]
     end
   end
 end
