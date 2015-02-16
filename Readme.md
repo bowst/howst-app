@@ -5,14 +5,11 @@ Tool to quickly and easily spin up local Drupal instances.  It functions essenti
 ## Part 1: Installing the Howst Application
 
 1. Install the following dependencies:
-
-* Vagrant (https://www.vagrantup.com/)
-* NodeJS (http://nodejs.org/)
-
+    * Vagrant (https://www.vagrantup.com/)
+    * NodeJS (http://nodejs.org/)
 2. Install Howst from npm via the command line:
-
     $ npm install -g howst
-    
+
 ## Part 2: Getting your local site up and running in Howst
 
 Option A: Exisiting Site
