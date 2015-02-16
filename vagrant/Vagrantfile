@@ -21,12 +21,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #PER MACHINE CONFIGURATION
   howst["machines"].each do |machine|
     config.vm.define "#{machine['hostname']}" do |node|
+      
       node.vm.hostname = "#{machine['hostname']}"
-        
-      # An array of symbols representing groups of cookbook described in the Vagrantfile
-      # to skip installing and copying to Vagrant's shelf.
-      # config.berkshelf.except = []
       node.vm.network "forwarded_port", guest: 80, host: machine['port']
+      # Share an additional folder to the guest VM.  
+      # Docroot
+      node.vm.synced_folder machine['host_docroot'], "/var/www/drupal", :create => true,
+        :"mount_options" => ["dmode=770,fmode=770"] 
+      #Drush files
+      node.vm.synced_folder machine['path_to_drush_files'], "/home/vagrant/.drush", :create => true,
+        :"mount_options" => ["dmode=770","fmode=770"]
       #Drush install
       case machine['drush_verion']
         when 5
@@ -46,7 +50,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       if machine['is_pantheon']
         node.vm.provision "shell", inline: "sudo curl https://github.com/pantheon-systems/cli/releases/download/0.4-beta/terminus.phar -L -o /usr/local/bin/terminus && sudo chmod +x /usr/local/bin/terminus"
       end
-      
       #STEP TO PREP FOR EXISTING SITES
       if machine['is_existing_site']
         #create script to pull down the db
@@ -65,7 +68,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         #version
         version_7 = "drupal-7.34"
         version_8 = "drupal-8.0.0-beta4"
-
         if machine["drupal_version"] == 7
           version = version_7
           url = "http://ftp.drupal.org/files/projects/#{version_7}.tar.gz"
@@ -75,28 +77,24 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         end
         #This is a NEW site, let's let drush handle building the new site for us
         $install_script = <<-SCRIPT
-        source /home/vagrant/.bashrc
-        export PATH="$HOME/.composer/vendor/bin:$PATH"
-        wget #{url}
-        tar xvfz #{version}.tar.gz -C /var/www/drupal --strip-components=1
-        sudo chown -R www-data:www-data /var/www/drupal && sudo gpasswd -a www-data vagrant
-        cd /var/www/drupal
-        yes | drush site-install --db-url='mysql://#{machine['db_user']}:#{machine['db_password']}@#{machine['db_host']}/#{machine['db_name']}' --site-name=#{machine['hostname']} --account-pass=password
-        sudo service apache2 restart
+          source /home/vagrant/.bashrc
+          export PATH="$HOME/.composer/vendor/bin:$PATH"
+          wget #{url}
+          tar xvfz #{version}.tar.gz -C /var/www/drupal --strip-components=1
+          cd /var/www/drupal
+          yes | drush site-install --db-url='mysql://#{machine['db_user']}:#{machine['db_password']}@#{machine['db_host']}/#{machine['db_name']}' --site-name=#{machine['hostname']} --account-pass=password
         SCRIPT
         node.vm.provision "shell" do |s|
           s.inline = $install_script
           s.privileged = false
         end
       end  
-      # Share an additional folder to the guest VM.  
-      # Docroot
-      node.vm.synced_folder machine['host_docroot'], "/var/www/drupal", :create => true,
-        :"mount_options" => ["dmode=770,fmode=770"] 
-        
-      #Drush files
-      node.vm.synced_folder machine['path_to_drush_files'], "/home/vagrant/.drush", :create => true,
-        :"mount_options" => ["dmode=770","fmode=770"]
+      #Set the appropriate permissions and restart apache!
+      $set_permissions = <<-SCRIPT
+        sudo chown -R www-data:www-data /var/www/drupal && sudo gpasswd -a www-data vagrant
+        sudo service apache2 restart
+      SCRIPT
+      node.vm.provision "shell", inline: $set_permissions
     end
   end
 end
