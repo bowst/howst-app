@@ -32,9 +32,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       node.vm.synced_folder machine['path_to_drush_files'], "/home/vagrant/.drush", :create => true,
         :"mount_options" => ["dmode=770","fmode=770"]
       #Drush install
-      case machine['drush_verion']
+      node.vm.provision "shell", inline: "sudo apt-get update"
+      case machine['drush_version']
         when 5
-          node.vm.provision "shell", inline: "sudo apt-get install drush"
+          node.vm.provision "shell", inline: "sudo apt-get install drush -y"
         when 7
           node.vm.provision "shell" do |s| 
             s.inline = "composer global require drush/drush:dev-master"
@@ -54,6 +55,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       if machine['is_existing_site']
         #create script to pull down the db
         $guest_script = <<-SCRIPT
+          set -e
           echo "Pulling Remote Database..."
           drush @#{machine['drush_alias']} sql-dump | tail -n +2 > /home/vagrant/db.sql
           echo "Updating local Database..."
@@ -64,6 +66,38 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         node.vm.provision "shell", inline: "echo \"#{$guest_script}\" > /home/vagrant/pull-db.sh"
         #add script as command
         node.vm.provision "shell", inline: "echo \"alias pull-db='sh /home/vagrant/pull-db.sh'\" >> /home/vagrant/.bashrc"
+        #Create settings.php if it doesn't exit
+        $settings_php = <<-SETTINGS
+          <?php
+            ​// Local development configuration.
+            if (!defined('PANTHEON_ENVIRONMENT')) {
+              // Database.
+              $databases['default']['default'] = array(
+                'database' => '#{machine['db_name']}',
+                'username' => '#{machine['db_user']}',
+                'password' => '#{machine['db_password']}',
+                'host' => '#{machine['db_host']}',
+                'driver' => 'mysql',
+                'port' => 3306,
+                'prefix' => '',
+              );
+            }
+        SETTINGS
+        $script = <<-SCRIPT
+          if [ -f /var/www/drupal/sites/default/settings.php ];
+          then
+             echo \"#{$settings_php}\" > /var/www/drupal/sites/default/settings.php
+          fi
+        SCRIPT
+        node.vm.provision "shell", inline: $script
+        
+        #pull down the database
+        $pulldb = <<-DB
+          echo "Setting up the database" 
+          drush @#{machine['drush_alias']} sql-dump | tail -n +2 > /home/vagrant/db.sql
+          drush sql-cli < /home/vagrant/db.sql --db-url='mysql://root:#{machine['db_root_password']}@#{machine['db_host']}/#{machine['db_name']}'
+        DB
+        node.vm.provision "shell", inline: $pulldb, privileged: false 
       else
         #version
         version_7 = "drupal-7.34"
@@ -79,18 +113,21 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         $install_script = <<-SCRIPT
           source /home/vagrant/.bashrc
           export PATH="$HOME/.composer/vendor/bin:$PATH"
+          echo "Downloading drupal..." 
           wget #{url}
           tar xvfz #{version}.tar.gz -C /var/www/drupal --strip-components=1
           cd /var/www/drupal
+          echo "Installing drupal..." 
           yes | drush site-install --db-url='mysql://#{machine['db_user']}:#{machine['db_password']}@#{machine['db_host']}/#{machine['db_name']}' --site-name=#{machine['hostname']} --account-pass=password
         SCRIPT
         node.vm.provision "shell" do |s|
           s.inline = $install_script
           s.privileged = false
         end
-      end  
+      end
       #Set the appropriate permissions and restart apache!
       $set_permissions = <<-SCRIPT
+        echo "Setting permissions and restarting server" 
         sudo chown -R www-data:www-data /var/www/drupal && sudo gpasswd -a www-data vagrant
         sudo service apache2 restart
       SCRIPT
