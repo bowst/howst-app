@@ -87,6 +87,10 @@ program
     var command = parsedArgs[0];
     parsedArgs.shift();
     parsedArgs.push(function(){});
+    if(utils.vagrantCommands.indexOf(command) == -1){
+      console.log("Please enter a valid command.  Use 'howst -h' to see list of available commands.".red);
+      return;
+    }
     vagrant[command].apply(this, parsedArgs);
 });
 

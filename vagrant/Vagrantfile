@@ -89,7 +89,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
              echo \"#{$settings_php}\" > /var/www/drupal/sites/default/settings.php
           fi
         SCRIPT
-        node.vm.provision "shell", inline: $script
+        #this is not yet operational
+        #node.vm.provision "shell", inline: $script
         
         #pull down the database
         $pulldb = <<-DB
