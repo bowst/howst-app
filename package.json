@@ -1,6 +1,6 @@
 {
   "name": "howst",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "A tool for easily creating and managing local drupal instances",
   "main": "index.js",
   "bin": {

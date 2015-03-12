@@ -14,7 +14,7 @@ var program = require('commander');
 var help = require('./lib/help');
 
 program
-  .version('0.0.4')
+  .version('0.0.6')
 
 //Custom help text
 program
@@ -87,6 +87,10 @@ program
     var command = parsedArgs[0];
     parsedArgs.shift();
     parsedArgs.push(function(){});
+    if(utils.vagrantCommands.indexOf(command) == -1){
+      console.log("Invalid command.  Use 'howst -h' to see list of available commands.".red);
+      return;
+    }
     vagrant[command].apply(this, parsedArgs);
 });
 
