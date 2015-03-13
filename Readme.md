@@ -59,6 +59,7 @@ Usage: howst [options] [command]
     config <hostname>           Reconfigure an existing Howst machine
     remove <hostname>           stops and deletes all traces of the Howst machine
     list [options]              Lists all known Howst machines
+    info <hostname>             Lists the properties of the given Howst machine
     remote-password <password>  Sets password for syncing remote databases
     *                           Vagrant passthrough.  See below.
 
@@ -88,7 +89,7 @@ Usage: howst [options] [command]
         ssh-config      outputs OpenSSH valid configuration to connect to the machine 
         status          outputs status of the vagrant machine 
         suspend         suspends the machine 
-        up              starts and provisions the vagrant environment
+        up              starts and provisions the vagrant environment (-p <Pantheon Password>) 
         version         prints current and latest Vagrant version
 
 ```
