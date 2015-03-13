@@ -55,6 +55,15 @@ program
     manage.listMachines(options);
 });
 
+//LIST
+program
+  .command('info <hostname>')
+  .description("Lists the properties of the given Howst machine")
+  .action(function(options) {
+    manage.getMachineInfo(options);
+    
+});
+
 //Set the remote password
 program
   .command('remote-password <password>')
