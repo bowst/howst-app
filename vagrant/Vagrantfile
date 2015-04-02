@@ -102,8 +102,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         node.vm.provision "shell", inline: $pulldb, privileged: false 
       else
         #version
-        version_7 = "drupal-7.34"
-        version_8 = "drupal-8.0.0-beta4"
+        version_7 = "drupal-7.36"
+        version_8 = "drupal-8.0.0-beta9"
         if machine["drupal_version"] == 7
           version = version_7
           url = "http://ftp.drupal.org/files/projects/#{version_7}.tar.gz"

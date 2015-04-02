@@ -2,13 +2,7 @@
 #DO NOT CHANGE OR THERE WILL BE TROUBLE
 db_name: "drupal"
 db_user: "drupal_user"
-<<<<<<< HEAD
 db_host: "localhost"
 db_password: "password"
 db_root_password: "vagrant"
-=======
-db_host: "127.0.0.1"
-db_password: "develop"
-db_root_password: 'vagrant'
-guest_docroot: "/var/www/drupal"
->>>>>>> parent of fd45e72... Autocreate settings.php if not present and remove option for guest docroot
+
