@@ -27,6 +27,7 @@ program
 //CREATE
 program
   .command('create <hostname>')
+  .description("Create a new Howst machine")
   .action(function(hostname, options) {
     manage.newMachine(hostname)
 });
