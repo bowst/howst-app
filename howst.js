@@ -20,9 +20,15 @@ program
 
 //Check required parameters
 var validated = false;
-// if (...) validated = true;
+if (program.args.length) validated = true;
 
 if (validated) {
+  //Custom help text
+  program
+    .on('--help', function(){
+      console.log(help.text);
+  });
+
   //CREATE
   program
     .command('create <hostname>')
@@ -107,7 +113,11 @@ if (validated) {
 }
 else {
   //Required parameters not met or --help invoked
-  program.help()
+  //traditional method: program.help()
+  //Custom help text
+  console.log(help.text);
+
+
 }
   
 
