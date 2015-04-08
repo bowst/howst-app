@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 //Configure vagrant interface
+var pkg = require('./package.json');
 var vagrant = require('vagrant');
 var utils = require('./lib/utils');
 var manage = require('./lib/manage');
@@ -14,7 +15,8 @@ var program = require('commander');
 var help = require('./lib/help');
 
 program
-  .version('0.0.8')
+  .version(pkg.version)
+  .description(pkg.description)
 
 //Custom help text
 program
@@ -72,8 +74,6 @@ program
     process.env['HOWST_REMOTE_PASSWORD'] = password;
 });
 
-
-
 /* TODO - find a way to have optional arguments with commander so we can use defaults
 //SET DEFAULT
 program
@@ -104,9 +104,10 @@ program
 });
 
 program.parse(process.argv);
-  
 
- 
+if (!program.args.length) {
+  program.help()
+}
 
 /*
 //From a dir with a Vagrantfile, this will ssh into the VM 
