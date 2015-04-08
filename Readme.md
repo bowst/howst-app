@@ -113,3 +113,7 @@ This will link the package to your bin so you can edit code in your local git re
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
+
+## Gravy
+To access PHPMyAdmin, visit http://localhost:<port>/phpmyadmin. "root" (without quotes) is the user; "vagrant" (without quotes) in the password.
