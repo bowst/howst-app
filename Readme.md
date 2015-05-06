@@ -15,7 +15,7 @@ Tool to quickly and easily spin up local Drupal instances.  It functions essenti
 
 Option A: Exisiting Site
 
-1. Clone the code onto your local machine (for example, in /Users/username/Sites/mysite.local)
+1. Clone the code onto your local machine (for example, in `/Users/<username>/Sites/<mysite>.local`)
 2. Create a folder in $HOME/.drush that contains the drush alias for the remote site from which you are cloning. Inlcude any other drush files you like (policy files, etc.)
 2. Create a new Howst machine with `howst create <hostname>`.  Be sure to give it a meaningful and unique hostname.
 3. The wizard will walk you though the remainder of the setup.  Here are the options, default values (which are in [brackets]), descriptions, and what you should type:
